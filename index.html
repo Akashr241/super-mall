@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Mall - Manage Your Business</title>
+    <link rel="stylesheet" href="styling.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏪 Super Mall</h1>
+            <p>Manage Your Shops, Products & Offers</p>
+        </div>
+
+        <div class="main-content">
+            <div id="alertContainer"></div>
+
+            <div id="loginSection" class="auth-section active">
+                <h2>Login</h2>
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" placeholder="Enter email">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" placeholder="Enter password">
+                </div>
+                <button class="btn btn-primary" onclick="handleLogin()">Login</button>
+                <button class="btn btn-secondary" onclick="showSection('registerSection')">Register</button>
+            </div>
+
+            <div id="registerSection" class="auth-section">
+                <h2>Register</h2>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="registerEmail">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="registerPassword">
+                </div>
+                <div class="form-group">
+                    <label>Role</label>
+                    <select id="registerRole">
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" onclick="handleRegister()">Register</button>
+                <button class="btn btn-secondary" onclick="showSection('loginSection')">Back</button>
+            </div>
+
+            <div id="adminDashboard" class="auth-section">
+                <div class="user-info">
+                    <h3>Admin Dashboard</h3>
+                    <p>Welcome, <span id="adminEmail"></span></p>
+                    <button class="btn btn-secondary" onclick="handleLogout()">Logout</button>
+                </div>
+
+                <div class="tab-buttons">
+                    <button class="tab-btn active" onclick="showAdminTab('shops')">Shops</button>
+                    <button class="tab-btn" onclick="showAdminTab('categories')">Categories</button>
+                    <button class="tab-btn" onclick="showAdminTab('floors')">Floors</button>
+                    <button class="tab-btn" onclick="showAdminTab('offers')">Offers</button>
+                </div>
+
+                <div id="shopsTab" class="admin-tab">
+                    <h3>Manage Shops</h3>
+                    <button class="btn btn-primary" onclick="showModal('shopModal')">Add Shop</button>
+                    <div id="shopsList" class="grid"></div>
+                </div>
+
+                <div id="categoriesTab" class="admin-tab hidden">
+                    <h3>Manage Categories</h3>
+                    <button class="btn btn-primary" onclick="showModal('categoryModal')">Add Category</button>
+                    <div id="categoriesList" class="grid"></div>
+                </div>
+
+                <div id="floorsTab" class="admin-tab hidden">
+                    <h3>Manage Floors</h3>
+                    <button class="btn btn-primary" onclick="showModal('floorModal')">Add Floor</button>
+                    <div id="floorsList" class="grid"></div>
+                </div>
+
+                <div id="offersTab" class="admin-tab hidden">
+                    <h3>Manage Offers</h3>
+                    <button class="btn btn-primary" onclick="showModal('offerModal')">Add Offer</button>
+                    <div id="offersList" class="grid"></div>
+                </div>
+            </div>
+
+            <div id="userDashboard" class="auth-section">
+                <div class="user-info">
+                    <h3>User Dashboard</h3>
+                    <p>Welcome, <span id="userEmail"></span></p>
+                    <button class="btn btn-secondary" onclick="handleLogout()">Logout</button>
+                </div>
+                <div id="userShopsList" class="grid"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="shopModal" class="modal">
+        <div class="modal-content">
+            <h3>Add Shop</h3>
+            <div class="form-group">
+                <label>Shop Name</label>
+                <input type="text" id="shopName">
+            </div>
+            <div class="form-group">
+                <label>Category</label>
+                <select id="shopCategory"></select>
+            </div>
+            <div class="form-group">
+                <label>Floor</label>
+                <select id="shopFloor"></select>
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="shopDescription" rows="3"></textarea>
+            </div>
+            <button class="btn btn-primary" onclick="saveShop()">Save</button>
+            <button class="btn btn-secondary" onclick="closeModal('shopModal')">Cancel</button>
+        </div>
+    </div>
+
+    <div id="categoryModal" class="modal">
+        <div class="modal-content">
+            <h3>Add Category</h3>
+            <div class="form-group">
+                <label>Category Name</label>
+                <input type="text" id="categoryName">
+            </div>
+            <button class="btn btn-primary" onclick="saveCategory()">Save</button>
+            <button class="btn btn-secondary" onclick="closeModal('categoryModal')">Cancel</button>
+        </div>
+    </div>
+
+    <div id="floorModal" class="modal">
+        <div class="modal-content">
+            <h3>Add Floor</h3>
+            <div class="form-group">
+                <label>Floor Number</label>
+                <input type="text" id="floorNumber">
+            </div>
+            <button class="btn btn-primary" onclick="saveFloor()">Save</button>
+            <button class="btn btn-secondary" onclick="closeModal('floorModal')">Cancel</button>
+        </div>
+    </div>
+
+    <div id="offerModal" class="modal">
+        <div class="modal-content">
+            <h3>Add Offer</h3>
+            <div class="form-group">
+                <label>Shop</label>
+                <select id="offerShop"></select>
+            </div>
+            <div class="form-group">
+                <label>Product</label>
+                <input type="text" id="offerProduct">
+            </div>
+            <div class="form-group">
+                <label>Discount %</label>
+                <input type="number" id="offerDiscount">
+            </div>
+            <button class="btn btn-primary" onclick="saveOffer()">Save</button>
+            <button class="btn btn-secondary" onclick="closeModal('offerModal')">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+        let data = {
+            shops: [],
+            categories: [],
+            floors: [],
+            offers: []
+        };
+
+        function showAlert(msg, type = 'success') {
+            const div = document.createElement('div');
+            div.className = `alert alert-${type}`;
+            div.textContent = msg;
+            document.getElementById('alertContainer').appendChild(div);
+            setTimeout(() => div.remove(), 3000);
+        }
+
+        function showSection(id) {
+            document.querySelectorAll('.auth-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        function showAdminTab(tab) {
+            document.querySelectorAll('.admin-tab').forEach(t => t.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById(tab + 'Tab').classList.remove('hidden');
+        }
+
+        function showModal(id) {
+            document.getElementById(id).classList.add('active');
+            if (id === 'shopModal') populateShopModal();
+            if (id === 'offerModal') populateOfferModal();
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        function handleRegister() {
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const role = document.getElementById('registerRole').value;
+
+            if (!email || !password) {
+                showAlert('Fill all fields', 'error');
+                return;
+            }
+
+            localStorage.setItem(`user_${email}`, JSON.stringify({ email, password, role }));
+            showAlert('Registered! Please login.');
+            showSection('loginSection');
+        }
+
+        function handleLogin() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            if (!email || !password) {
+                showAlert('Fill all fields', 'error');
+                return;
+            }
+
+            const userStr = localStorage.getItem(`user_${email}`);
+            if (!userStr) {
+                showAlert('User not found. Register first!', 'error');
+                return;
+            }
+
+            const user = JSON.parse(userStr);
+            if (user.password !== password) {
+                showAlert('Wrong password', 'error');
+                return;
+            }
+
+            currentUser = user;
+            showAlert(`Welcome ${email}!`);
+
+            if (user.role === 'admin') {
+                document.getElementById('adminEmail').textContent = email;
+                showSection('adminDashboard');
+                loadData();
+                renderAll();
+            } else {
+                document.getElementById('userEmail').textContent = email;
+                showSection('userDashboard');
+                loadData();
+                renderUserShops();
+            }
+        }
+
+        function handleLogout() {
+            currentUser = null;
+            showSection('loginSection');
+            showAlert('Logged out');
+        }
+
+        function loadData() {
+            data.shops = JSON.parse(localStorage.getItem('shops') || '[]');
+            data.categories = JSON.parse(localStorage.getItem('categories') || '[]');
+            data.floors = JSON.parse(localStorage.getItem('floors') || '[]');
+            data.offers = JSON.parse(localStorage.getItem('offers') || '[]');
+        }
+
+        function saveCategory() {
+            const name = document.getElementById('categoryName').value;
+            if (!name) return showAlert('Enter name', 'error');
+
+            data.categories.push({ id: Date.now(), name });
+            localStorage.setItem('categories', JSON.stringify(data.categories));
+            showAlert('Category added!');
+            closeModal('categoryModal');
+            renderCategories();
+        }
+
+        function saveFloor() {
+            const number = document.getElementById('floorNumber').value;
+            if (!number) return showAlert('Enter floor', 'error');
+
+            data.floors.push({ id: Date.now(), number });
+            localStorage.setItem('floors', JSON.stringify(data.floors));
+            showAlert('Floor added!');
+            closeModal('floorModal');
+            renderFloors();
+        }
+
+        function populateShopModal() {
+            const catSel = document.getElementById('shopCategory');
+            const floorSel = document.getElementById('shopFloor');
+            
+            catSel.innerHTML = data.categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('') || '<option>Add categories first</option>';
+            floorSel.innerHTML = data.floors.map(f => `<option value="${f.id}">${f.number}</option>`).join('') || '<option>Add floors first</option>';
+        }
+
+        function saveShop() {
+            const shop = {
+                id: Date.now(),
+                name: document.getElementById('shopName').value,
+                categoryId: document.getElementById('shopCategory').value,
+                floorId: document.getElementById('shopFloor').value,
+                description: document.getElementById('shopDescription').value
+            };
+
+            if (!shop.name) return showAlert('Enter shop name', 'error');
+
+            data.shops.push(shop);
+            localStorage.setItem('shops', JSON.stringify(data.shops));
+            showAlert('Shop added!');
+            closeModal('shopModal');
+            renderShops();
+        }
+
+        function populateOfferModal() {
+            const sel = document.getElementById('offerShop');
+            sel.innerHTML = data.shops.map(s => `<option value="${s.id}">${s.name}</option>`).join('') || '<option>Add shops first</option>';
+        }
+
+        function saveOffer() {
+            const offer = {
+                id: Date.now(),
+                shopId: document.getElementById('offerShop').value,
+                product: document.getElementById('offerProduct').value,
+                discount: document.getElementById('offerDiscount').value
+            };
+
+            if (!offer.product) return showAlert('Fill all fields', 'error');
+
+            data.offers.push(offer);
+            localStorage.setItem('offers', JSON.stringify(data.offers));
+            showAlert('Offer added!');
+            closeModal('offerModal');
+            renderOffers();
+        }
+
+        function renderCategories() {
+            const html = data.categories.length === 0 ? '<p>No categories yet</p>' :
+                data.categories.map(c => `<div class="card"><h3>${c.name}</h3></div>`).join('');
+            document.getElementById('categoriesList').innerHTML = html;
+        }
+
+        function renderFloors() {
+            const html = data.floors.length === 0 ? '<p>No floors yet</p>' :
+                data.floors.map(f => `<div class="card"><h3>${f.number}</h3></div>`).join('');
+            document.getElementById('floorsList').innerHTML = html;
+        }
+
+        function renderShops() {
+            const html = data.shops.length === 0 ? '<p>No shops yet</p>' :
+                data.shops.map(s => {
+                    const cat = data.categories.find(c => c.id == s.categoryId);
+                    const floor = data.floors.find(f => f.id == s.floorId);
+                    return `<div class="card">
+                        <h3>${s.name}</h3>
+                        <p><strong>Category:</strong> ${cat?.name || 'N/A'}</p>
+                        <p><strong>Floor:</strong> ${floor?.number || 'N/A'}</p>
+                        <p>${s.description}</p>
+                    </div>`;
+                }).join('');
+            document.getElementById('shopsList').innerHTML = html;
+        }
+
+        function renderOffers() {
+            const html = data.offers.length === 0 ? '<p>No offers yet</p>' :
+                data.offers.map(o => {
+                    const shop = data.shops.find(s => s.id == o.shopId);
+                    return `<div class="card">
+                        <h3>${o.product}</h3>
+                        <p><strong>Shop:</strong> ${shop?.name || 'N/A'}</p>
+                        <p><strong>Discount:</strong> ${o.discount}%</p>
+                    </div>`;
+                }).join('');
+            document.getElementById('offersList').innerHTML = html;
+        }
+
+        function renderUserShops() {
+            renderShops();
+            document.getElementById('userShopsList').innerHTML = document.getElementById('shopsList').innerHTML;
+        }
+
+        function renderAll() {
+            renderCategories();
+            renderFloors();
+            renderShops();
+            renderOffers();
+        }
+    </script>
+</body>
+</html>
