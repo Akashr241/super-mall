@@ -1,0 +1,176 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Mall - Manage Your Business</title>
+    <link rel="stylesheet" href="styling.css">
+    
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏪 Super Mall</h1>
+            <p>Manage Your Shops, Products & Offers</p>
+        </div>
+
+        <div class="main-content">
+            <div id="alertContainer"></div>
+
+            <div id="loginSection" class="auth-section active">
+                <h2>Login</h2>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="loginEmail" placeholder="Enter email">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" placeholder="Enter password">
+                </div>
+                <button class="btn btn-primary" onclick="handleLogin()">Login</button>
+                <button class="btn btn-secondary" onclick="showSection('registerSection')">Register</button>
+            </div>
+
+            <div id="registerSection" class="auth-section">
+                <h2>Register</h2>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="registerEmail">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="registerPassword">
+                </div>
+                <div class="form-group">
+                    <label>Role</label>
+                    <select id="registerRole">
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" onclick="handleRegister()">Register</button>
+                <button class="btn btn-secondary" onclick="showSection('loginSection')">Back</button>
+            </div>
+
+            <div id="adminDashboard" class="auth-section">
+                <div class="user-info">
+                    <h3>Admin Dashboard</h3>
+                    <p>Welcome, <span id="adminEmail"></span></p>
+                    <button class="btn btn-secondary" onclick="handleLogout()">Logout</button>
+                </div>
+
+                <div class="tab-buttons">
+                    <button class="tab-btn active" onclick="showAdminTab('shops')">Shops</button>
+                    <button class="tab-btn" onclick="showAdminTab('categories')">Categories</button>
+                    <button class="tab-btn" onclick="showAdminTab('floors')">Floors</button>
+                    <button class="tab-btn" onclick="showAdminTab('offers')">Offers</button>
+                </div>
+
+                <div id="shopsTab" class="admin-tab">
+                    <h3>Manage Shops</h3>
+                    <button class="btn btn-primary" onclick="showModal('shopModal')">Add Shop</button>
+                    <div id="shopsList" class="grid"></div>
+                </div>
+
+                <div id="categoriesTab" class="admin-tab hidden">
+                    <h3>Manage Categories</h3>
+                    <button class="btn btn-primary" onclick="showModal('categoryModal')">Add Category</button>
+                    <div id="categoriesList" class="grid"></div>
+                </div>
+
+                <div id="floorsTab" class="admin-tab hidden">
+                    <h3>Manage Floors</h3>
+                    <button class="btn btn-primary" onclick="showModal('floorModal')">Add Floor</button>
+                    <div id="floorsList" class="grid"></div>
+                </div>
+
+                <div id="offersTab" class="admin-tab hidden">
+                    <h3>Manage Offers</h3>
+                    <button class="btn btn-primary" onclick="showModal('offerModal')">Add Offer</button>
+                    <div id="offersList" class="grid"></div>
+                </div>
+            </div>
+
+            <div id="userDashboard" class="auth-section">
+                <div class="user-info">
+                    <h3>User Dashboard</h3>
+                    <p>Welcome, <span id="userEmail"></span></p>
+                    <button class="btn btn-secondary" onclick="handleLogout()">Logout</button>
+                </div>
+                <div id="userShopsList" class="grid"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="shopModal" class="modal">
+        <div class="modal-content">
+            <h3>Add Shop</h3>
+            <div class="form-group">
+                <label>Shop Name</label>
+                <input type="text" id="shopName">
+            </div>
+            <div class="form-group">
+                <label>Category</label>
+                <select id="shopCategory"></select>
+            </div>
+            <div class="form-group">
+                <label>Floor</label>
+                <select id="shopFloor"></select>
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="shopDescription" rows="3"></textarea>
+            </div>
+            <button class="btn btn-primary" onclick="saveShop()">Save</button>
+            <button class="btn btn-secondary" onclick="closeModal('shopModal')">Cancel</button>
+        </div>
+    </div>
+
+    <div id="categoryModal" class="modal">
+        <div class="modal-content">
+            <h3>Add Category</h3>
+            <div class="form-group">
+                <label>Category Name</label>
+                <input type="text" id="categoryName">
+            </div>
+            <button class="btn btn-primary" onclick="saveCategory()">Save</button>
+            <button class="btn btn-secondary" onclick="closeModal('categoryModal')">Cancel</button>
+        </div>
+    </div>
+
+    <div id="floorModal" class="modal">
+        <div class="modal-content">
+            <h3>Add Floor</h3>
+            <div class="form-group">
+                <label>Floor Number</label>
+                <input type="text" id="floorNumber">
+            </div>
+            <button class="btn btn-primary" onclick="saveFloor()">Save</button>
+            <button class="btn btn-secondary" onclick="closeModal('floorModal')">Cancel</button>
+        </div>
+    </div>
+
+    <div id="offerModal" class="modal">
+        <div class="modal-content">
+            <h3>Add Offer</h3>
+            <div class="form-group">
+                <label>Shop</label>
+                <select id="offerShop"></select>
+            </div>
+            <div class="form-group">
+                <label>Product</label>
+                <input type="text" id="offerProduct">
+            </div>
+            <div class="form-group">
+                <label>Discount %</label>
+                <input type="number" id="offerDiscount">
+            </div>
+            <button class="btn btn-primary" onclick="saveOffer()">Save</button>
+            <button class="btn btn-secondary" onclick="closeModal('offerModal')">Cancel</button>
+        </div>
+    </div>
+<script type="module" src="backend.js"></script>
+   
+</body>
+</html>
